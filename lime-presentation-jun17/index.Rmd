@@ -245,40 +245,19 @@ class: inverse
 - Explanation
 
 --
+<br><br>
 
 - $\xi(x) = \underset{g\in G}{\operatorname{argmax}} \ell(f, g, \pi_x) + \Omega(g)$
 
----
-class: inverse
-background-image: url(images/p-frog.png)
-background-position: 95% 85%
-background-size: 50% 50%
+<IMG STYLE="position:absolute; TOP:300px; LEFT:400px; WIDTH:500px; HEIGHT:300px" SRC="images/p-frog.png")>
 
-# What is LIME ?
-
-#### "Why should I trust you"
-##### Explaining the predictions of any classifier
-
-- Marco Tulio Rubiero, Sameer Singh, Carlos Guestrin
-
-### LIME
-
-- Local 
-
-- Interpretable
-
-- Model-Agnostic
-
-- Explanation
-
-- $\xi(x) = \underset{g\in G}{\operatorname{argmax}} \ell(f, g, \pi_x) + \Omega(g)$
 
 ---
-background-image: url(images/lime-boundary.png)
-background-position: 50% 60%
-background-size: 60% 50%
 
 ### What is LIME
+
+<IMG STYLE="position:absolute; TOP:120px; LEFT:80px; WIDTH:750px; HEIGHT:475px" SRC="images/lime-boundary.png")>
+
 
 ???
 
@@ -424,6 +403,8 @@ explain.out <- read.csv(pres.data.file)
 explain.out
 ```
 
+
+
 <br><br><br><br><br><br><br><br><br><br>
 
 --
@@ -435,11 +416,6 @@ explain.out
 <ul> Elevation = 2950 is between 2810 & 3001. From permutated data, this supports this class.</ul>
 
 <ul> HD Hyrdo = 95. This does not support the true class. It is more associated with class <b> Spruce Fir </b></ul>
-
---
-
-<ul> Lets Recap - how did we get here </ul>
-
 
 ???
 Write down good explanation here. 
@@ -453,6 +429,13 @@ background-position: 100% 0%
 <br><br><br><br><br><br><br>
 
 ![](images/lime-output/explain-output-box.png)
+
+---
+### Recap - How does LIME Work?
+
+<IMG STYLE="position:absolute; TOP:100px; LEFT:80px; WIDTH:850px; HEIGHT:550px" SRC="images/lime-flow.png")>
+
+
 
 ---
 background-image: url(images/lime-output/xgb-wrong-models.png)

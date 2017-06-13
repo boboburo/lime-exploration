@@ -31,7 +31,7 @@ class: left, top
 
 ### Lets see it in action!
 
-### Can it be useful?
+### Does what its says on the tin?
 
 ### Really can it be useful ?
 
@@ -45,17 +45,14 @@ class: left, top
 
 - Todays talk is about Machine Interprability and LIME
 
-- Structure of todays talk. 
-
 - Quicly explain the context of ML Interpretablity, why you might want to use it, or indeed why you might need to use it.
 
 - Talk about the LIME technique and how it works. 
 
 - Going to show you some examples that I have created and how might go about evaulating it. 
 
-- Finally going to go over some of the claims that are made in the LIME paper
-
- - Give me opinon and whether it addresses all its claims and also talk a bit about what it doesn't address. 
+- Finally going to go over some of the claims that are made in the LIME paper and 
+my opinon as to some of benefits and pitalls.  
 ---
 
 # What is ML Interpretability ?
@@ -419,7 +416,8 @@ background-position: 100% 50%
 
 
 ```{r explain.out, echo =F}
-pres.data.file <- "~/Desktop/github/lime-exploration/lime-presentation-jun17/images/lime-output/explain-output.csv"
+setwd("~/Documents/Projects/learning/lime-exploration")
+pres.data.file <- "lime-presentation-jun17/images/lime-output/explain-output.csv"
 explain.out <- read.csv(pres.data.file)
 explain.out
 ```
@@ -462,7 +460,9 @@ background-position: 50% 80%
 ### Compare Models - XGB Wrong
 
 ---
-### Real World - FRAUD 
+### Real World
+
+- True Fraud, Conor Breen
 
 ---
 class: inverse

@@ -77,7 +77,7 @@ test.data  <- input.data[-index, ]
 
 ```{r cross.val.set}
 # Set up for parallel procerssing
-registerDoParallel(4,cores=4)
+registerDoParallel(8,cores=8)
 getDoParWorkers()
 
 #five folds with 5-fold cv 
@@ -89,24 +89,24 @@ ctrl <- caret::trainControl(method = "repeatedcv", number = 5, repeats = 5, clas
 
 
 ```{r models}
-#knn.tune <- caret::train(target ~., data = train.data , method="knn",        trControl = ctrl)
-#rf.tune  <- caret::train(target ~., data = train.data , method="rf",        trControl = ctrl)
-#xgb.tune <- caret::train(target ~. , data = train.data, method = "xgbTree", trControl = ctrl)
-#mlp.tune <- caret::train(target ~ ., data = train.data, method = "mlp",     trControl = ctrl)
+knn.tune <- caret::train(target ~., data = train.data , method="knn",        trControl = ctrl)
+rf.tune  <- caret::train(target ~., data = train.data , method="rf",        trControl = ctrl)
+xgb.tune <- caret::train(target ~. , data = train.data, method = "xgbTree", trControl = ctrl)
+mlp.tune <- caret::train(target ~ ., data = train.data, method = "mlp",     trControl = ctrl)
 
 #Can save the trained models for loading again
-#save(knn.tune, file="models/cov-type/knn-tune.Rdata")
-#save(rf.tune, file="models/cov-type/rf-tune.Rdata")
-#save(xgb.tune, file="models/cov-type/xgb-tune.Rdata")
-#save(mlp.tune, file="models/cov-type/mlp-tune.Rdata")
+save(knn.tune, file="models/cov-type2/knn-tune.Rdata")
+save(rf.tune, file="models/cov-type2/rf-tune.Rdata")
+save(xgb.tune, file="models/cov-type2/xgb-tune.Rdata")
+save(mlp.tune, file="models/cov-type2/mlp-tune.Rdata")
 
 #load the models
-setwd("~/Desktop/github/lime-exploration/lime-experiment-R/models/cov-type")
-load("knn-tune.Rdata")
-load("rf-tune.Rdata")
-load("xgb-tune.Rdata")
-load("mlp-tune.Rdata")
-setwd("~/Desktop/github/lime-exploration")
+#setwd("~/Desktop/github/lime-exploration/lime-experiment-R/models/cov-type")
+#load("knn-tune.Rdata")
+#load("rf-tune.Rdata")
+#load("xgb-tune.Rdata")
+#load("mlp-tune.Rdata")
+#setwd("~/Desktop/github/lime-exploration")
 
 ```
 
@@ -211,7 +211,9 @@ a.test.data.correct <- test.data[rownames(test.data) == correct.id,-which(names(
 b.test.data.wrong <- test.data[rownames(test.data) == wrong.id,-which(names(test.data) %in% c("target"))]
 c.test.data.knn.wrong <- test.data[rownames(test.data) == knn.wrong.id,-which(names(test.data) %in% c("target"))]
 d.test.data.xgb.wrong <- test.data[rownames(test.data) == xgb.wrong.id,-which(names(test.data) %in% c("target"))]
-e.test.data.correct.mult <-  test.data[rownames(test.data) %in% correct.id.mult,-which(names(test.data) %in% c("target"))]
+
+#Little cheat here. 
+e.test.data.correct.mult <-  test.data[rownames(test.data)  == 472120,-which(names(test.data) %in% c("target"))]
 
 a.target <- test.data[rownames(test.data) == correct.id,c("target")]
 b.target <- test.data[rownames(test.data) == wrong.id,c("target")]
@@ -232,14 +234,14 @@ plot.a.knn <- plot_features(explain.a.knn, ncol = 3) + theme.lime.mlt() + labs(x
 plot.a.rf <- plot_features(explain.a.rf, ncol = 3) + theme.lime.mlt() + labs(x = "rf")
 plot.a.xgb <- plot_features(explain.a.xgb , ncol = 3) + theme.lime.mlt() + labs(x = "xgb") + theme(legend.position = "bottom")
 
-setwd("~/Desktop/github/lime-exploration/lime-presentation-jun17/images/lime-output")
+setwd("~/Desktop/github/lime-exploration/lime-presentation-jun17/images/lime-output2")
 png(filename = "all-correct-3-models.png", width = 12, height = 7.5,  units = "in", res=240 ,type = "quartz")
 grid.arrange(plot.a.knn, plot.a.rf, plot.a.xgb, nrow =3, top = paste0("True Label: ",a.target," , all classifiers correct"))
 rm(explain.a.knn, explain.a.rf, explain.a.xgb, plot.a.knn, plot.a.rf, plot.a.xgb)
 ```
 
 ```{r lime.visual.all.wrong}
-#generation explations for correc
+#generation explations for all wrong
 explain.b.knn <- explain.knn(b.test.data.wrong, n_labels = 3, n_features = 4)
 explain.b.rf <- explain.rf(b.test.data.wrong, n_labels = 3, n_features = 4)
 explain.b.xgb <- explain.xgb(b.test.data.wrong, n_labels = 3, n_features = 4)
@@ -272,11 +274,11 @@ rm(explain.d.knn, explain.d.rf, explain.d.xgb,  plot.d.knn, plot.d.rf, plot.d.xg
 ```
 
 ```{r mult.correct.with.xgb}
-explanation.e.rf <- explain.rf(e.test.data.correct.mult, n_labels = 6, n_features = 5)
+explanation.e.rf <- explain.rf(e.test.data.correct.mult, n_labels = 3, n_features = 5)
 
 setwd("~/Desktop/github/lime-exploration/lime-presentation-jun17/images/lime-output")
-png(filename = "explain-output-two.png", width = 12, height = 7,  units = "in", res=240 ,type = "quartz")
-plot_features(explanation.e.rf, ncol = 3)
+png(filename = "explain-output.png", width = 12, height = 3.5,  units = "in", res=240 ,type = "quartz")
+plot_features(explanation.e.rf, ncol = 3) + theme.lime.mlt()
 rm(explanation.e.rf)
 ```
 
@@ -286,8 +288,8 @@ tibble::glimpse(explanation.e.rf)
 ```
 
 ```{r}
-example.for.explaining <- test.data %>% filter(row.names(test.data) == 98147)
-write.csv(example.for.explaining, file = "~/Desktop/github/lime-exploration/lime-presentation-jun17/images/lime-output/explain-output.csv")
+example.for.explaining <- test.data %>% filter(row.names(test.data) == 472120)
+write.csv(example.for.explaining, file = "~/Desktop/github/lime-exploration/lime-presentation-jun17/images/lime-output2/explain-output.csv")
 ```
 
 
@@ -296,12 +298,12 @@ library(ggthemes)
 
 example.for.explaining.long <- example.for.explaining %>%
   select(-VD.Hydro) %>%
-  gather(x, y , Elevation:HS.3pm)
-
+  gather(x, y , Elevation:HD.Fire)
+           
 test.data.long <- train.data %>% 
   filter(target %in% c("aspen","lodge.pine","spruce.fir")) %>%
   select(-VD.Hydro) %>%
-  gather(x, y , Elevation:HS.3pm)
+  gather(x, y , Elevation:HD.Fire)
 
 explain.plot <-  ggplot( test.data.long, aes( x = target, y = y )) +
   geom_boxplot(alpha = 0.8, color = "grey") +
@@ -310,9 +312,8 @@ explain.plot <-  ggplot( test.data.long, aes( x = target, y = y )) +
   theme(axis.text.x = element_text(angle = 30)) +
   facet_wrap(~x, scales = "free", ncol = 3)
 
-setwd("~/Desktop/github/lime-exploration/lime-presentation-jun17/images/lime-output")
+setwd("~/Desktop/github/lime-exploration/lime-presentation-jun17/images/lime-output2")
 png(filename = "explain-output-box.png", width = 12, height = 7.5,  units = "in", res=240 ,type = "quartz")
-explain.plot
 ```
 
 

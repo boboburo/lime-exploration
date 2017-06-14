@@ -5,7 +5,7 @@ date: "10/6/2017"
 output: html_document
 ---
 
-This note was inspired by https://shiring.github.io/machine_learning/2017/04/23/lime
+This work was inspired by https://shiring.github.io/machine_learning/2017/04/23/lime
 
 
 
@@ -300,12 +300,12 @@ example.for.explaining.long <- example.for.explaining %>%
   select(-VD.Hydro) %>%
   gather(x, y , Elevation:HD.Fire)
            
-test.data.long <- train.data %>% 
+train.data.long <- train.data %>% 
   filter(target %in% c("aspen","lodge.pine","spruce.fir")) %>%
   select(-VD.Hydro) %>%
   gather(x, y , Elevation:HD.Fire)
 
-explain.plot <-  ggplot( test.data.long, aes( x = target, y = y )) +
+explain.plot <-  ggplot( train.data.long, aes( x = target, y = y )) +
   geom_boxplot(alpha = 0.8, color = "grey") +
   geom_point(data = example.for.explaining.long, color = "red", size = 3) + 
   theme_minimal() + 
@@ -317,16 +317,27 @@ png(filename = "explain-output-box.png", width = 12, height = 7.5,  units = "in"
 ```
 
 
-```{r test.filter}
-correct.id.mult <- sample(correct.id.list$ids[[1]], 2)
-test.mult <-  test.data[rownames(test.data) %in% correct.id.mult,-which(names(test.data) %in% c("target"))]
+```{r}
 
-explain.mult <- explain.rf(test.mult, n_labels = 2, n_features = 10)
-temp <- plot_features(explain.mult, ncol = 2)
+example.for.explaining <- test.data %>% filter(row.names(test.data) == 100187)
+example.for.explaining.short <- example.for.explaining %>%
+  select(Elevation, HD.Hydro, HD.Fire, target) %>%
+  gather(x, y , Elevation:HD.Fire)
 
-temp2 <- temp %+% (temp$data %>% group_by(case) %>% filter(feature_weight >0) %>% filter(label == "lodge.pine") %>% top_n(n=3, wt = feature_weight))
+train.data.long <- train.data %>%
+   filter(target %in% c("aspen","lodge.pine","spruce.fir")) %>% 
+   select(Elevation, HD.Hydro, HD.Fire, target) %>%
+   gather(x, y , Elevation:HD.Fire)
 
+explain.plot.short <-ggplot(train.data.long, aes( x = target, y = y )) +
+  geom_boxplot(alpha = 0.8, color = "grey") +
+  geom_point(data = example.for.explaining.short, color = "red", size = 3) + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 30)) +
+  facet_wrap(~x, scales = "free", ncol = 3)
 
-temp2 + theme(legend.position = "none")
-
+setwd("~/Documents/Projects/learning/lime-exploration/")
+png.file <- "lime-presentation-jun17/images/lime-output2/explain-output-3var.png"
+png(filename = png.file , width = 12, height = 3,  units = "in", res=240)
 ```
+
